@@ -1,0 +1,43 @@
+This is a simple program for not a root user to  executing some sh script as a root user.  
+
+############################### Instruction: ##################################
+|- HowToUse:	touch a config file and run xxx.sh xxx.log "argument1" "argument2" ... "argumentn"
+|
+|- Argument1:	this arg must be a existing sh script file
+|
+|- Argument2:	this arg is a option for log file
+|
+|- Argumentn:	except arg1 and arg2, the others are option for sh argument
+|
+|- ErrCodeDesc:	1 sh file not exist; 2 file cannot be executed; 3 not a sh file; 4 not a config sh file; 5 no config file.
+|
+|- DefaultlLog:	default log file is current dir's run.log
+|
+|- ShWarning:	the offering sh script should validate all the arguments before use it
+|
+|- AuthWarning: make sure php process cannot change config file and sh file which was written in config.
+
+
+important:
+	1 make sure the task producer [maybe php process]  have no auth to change config file and the sh script file.
+
+	2 make sure the sh script file will not use the argument as a cmd or no illeagle validation before use it as a cmd.  
+example:
+	1 cc.sh file content:
+	#!/bin/bash
+	echo 233
+	echo $1
+	echo $2
+	echo $3
+	
+	2 here some examples:
+	[root@test run]# ./bin/run ./cc.sh run.log rm -rf /
+	233
+	rm
+	-rf
+	/
+	[root@test run]# ./bin/run ./cc.sh run.log "test || rm -rf / || ls"  "rm -rf /" "test && rm -rf /" 
+	233
+	test || rm -rf / || ls
+	rm -rf /
+	test && rm -rf /
